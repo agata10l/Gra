@@ -115,7 +115,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="kolkoikrzyzyk\kolkoikrzyzyk.cpp" />
+    <ClCompile Include="kolkoikrzyzyk\plansza\plansza.cpp" />
     <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="kolkoikrzyzyk\gracz\gracz.h" />
+    <ClInclude Include="kolkoikrzyzyk\kolkoikrzyzyk.h" />
+    <ClInclude Include="kolkoikrzyzyk\plansza\plansza.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
