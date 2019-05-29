@@ -2,9 +2,10 @@
 #include "plansza.h"
 
 
-Plansza::Plansza(int rozmiar) :
+Plansza::Plansza(int rozmiar,int ile_w_rzedzie) :
 	rozmiar_(rozmiar),
-	liczba_ruchow_(0)
+	liczba_ruchow_(0),
+	ile_w_rzedzie_(ile_w_rzedzie)
 {
 	plansza_ = new char*[rozmiar_];
 	for (int i = 0; i < rozmiar_; i++)
@@ -59,12 +60,19 @@ void Plansza::wyswietl()
 		for (int j = 0; j < rozmiar_; j++)
 		{
 			std::cout<< plansza_[i][j];
+
+			if (j < rozmiar_ - 1)
+			{
+				std::cout << "|";
+			}
 		}
-		std::cout << std::endl;
+		std::cout << "\n";
+		std::cout << "-------------" << std::endl;
+
 	}
 }
 
-bool Plansza::czy_wygrana(char gracz,int ile_w_rzedzie)
+bool Plansza::czy_wygrana(char gracz)
 {
 	int w_rzedzie=0;
 
@@ -76,7 +84,7 @@ bool Plansza::czy_wygrana(char gracz,int ile_w_rzedzie)
 			if (plansza_[i][j] == gracz)
 			{
 				w_rzedzie++;
-				if (w_rzedzie == ile_w_rzedzie)
+				if (w_rzedzie == ile_w_rzedzie_)
 				{
 					return true;
 				}
@@ -98,7 +106,7 @@ bool Plansza::czy_wygrana(char gracz,int ile_w_rzedzie)
 			if (plansza_[j][i] == gracz)
 			{
 				w_rzedzie++;
-				if (w_rzedzie == ile_w_rzedzie)
+				if (w_rzedzie == ile_w_rzedzie_)
 				{
 					return true;
 				}
@@ -121,7 +129,7 @@ bool Plansza::czy_wygrana(char gracz,int ile_w_rzedzie)
 		{
 			if (gracz == plansza_[x++][y++])
 			{
-				if (++w_rzedzie == ile_w_rzedzie)
+				if (++w_rzedzie == ile_w_rzedzie_)
 				{
 					return true;
 				}
@@ -141,7 +149,7 @@ bool Plansza::czy_wygrana(char gracz,int ile_w_rzedzie)
 		{
 			if (gracz == plansza_[x++][y++])
 			{
-				if (++w_rzedzie == ile_w_rzedzie)
+				if (++w_rzedzie == ile_w_rzedzie_)
 				{
 					return true;
 				}
@@ -163,7 +171,7 @@ bool Plansza::czy_wygrana(char gracz,int ile_w_rzedzie)
 		{
 			if (gracz == plansza_[x++][y--])
 			{
-				if (++w_rzedzie == ile_w_rzedzie)
+				if (++w_rzedzie == ile_w_rzedzie_)
 				{
 					return true;
 				}
@@ -183,7 +191,7 @@ bool Plansza::czy_wygrana(char gracz,int ile_w_rzedzie)
 		{
 			if (gracz == plansza_[x--][y++])
 			{
-				if (++w_rzedzie == ile_w_rzedzie)
+				if (++w_rzedzie == ile_w_rzedzie_)
 				{
 					return true;
 				}
@@ -200,6 +208,33 @@ bool Plansza::czy_wygrana(char gracz,int ile_w_rzedzie)
 bool Plansza::czy_remis()
 {
 	return liczba_ruchow_ == rozmiar_ * rozmiar_;
+}
+
+char Plansza::zwroc_wygranego()
+{
+	if (czy_wygrana(GRACZ_AI))
+	{
+		return GRACZ_AI;
+	}
+	if (czy_wygrana(GRACZ_CZLOWIEK))
+	{
+		return GRACZ_CZLOWIEK;
+	}
+	if (czy_remis() == 0)
+	{
+		return GRACZ_NIEZNANY;
+	}
+	return 0;
+}
+
+char Plansza::zwroc_plansze(int x, int y)
+{
+	return plansza_[x][y];
+}
+
+int Plansza::zwroc_rozmiar()
+{
+	return rozmiar_;
 }
 
 

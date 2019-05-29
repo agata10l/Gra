@@ -3,6 +3,12 @@
 
 #include "kolkoikrzyzyk.h"
 
+Kolkoikrzyzyk::Kolkoikrzyzyk() :
+	plansza_(nullptr),
+	minmax_(nullptr)
+{
+}
+
 Kolkoikrzyzyk::~Kolkoikrzyzyk()
 {
 	delete plansza_;
@@ -16,14 +22,14 @@ void Kolkoikrzyzyk::inicializacja()
 	std::cout << "Podaj rozmiar planszy:" << "\t";
 	std::cin >> rozmiar;
 
-	plansza_ = new Plansza(rozmiar);
-
 	std::cout << "Podaj ilosc znakow w rzedzie:" << "\t";
 	std::cin >> ile_w_rzedzie_;
 
+	plansza_ = new Plansza(rozmiar,ile_w_rzedzie_);
+
 	std::cout << "Wybierz zaczynajacego:" << std::endl;
 	std::cout << "[X] -ty" << std::endl;
-	std::cout << "[Y] -komputer" << std::endl;
+	std::cout << "[Y] -gracz AI" << std::endl;
 	std::cin >> wybor_gracza;
 	if (wybor_gracza == 'x' || wybor_gracza == 'X')
 	{
@@ -58,7 +64,7 @@ char Kolkoikrzyzyk::wykonuj_ruch()
 			
 		} while (plansza_->dodaj_ruch(x, y, gracz_) == false);
 
-		if (plansza_->czy_wygrana(gracz_, ile_w_rzedzie_))
+		if (plansza_->czy_wygrana(gracz_))
 		{
 			return gracz_;
 		}
@@ -73,7 +79,7 @@ char Kolkoikrzyzyk::wykonuj_ruch()
 
 		} while (plansza_->dodaj_ruch(x, y, gracz_) == false);
 		
-		if (plansza_->czy_wygrana(gracz_, ile_w_rzedzie_))
+		if (plansza_->czy_wygrana(gracz_))
 		{
 			return gracz_;
 		}

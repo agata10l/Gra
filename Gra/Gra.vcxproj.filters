@@ -4,10 +4,12 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="kolkoikrzyzyk\plansza\plansza.cpp" />
     <ClCompile Include="kolkoikrzyzyk\kolkoikrzyzyk.cpp" />
+    <ClCompile Include="kolkoikrzyzyk\MinMax\MinMax.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="kolkoikrzyzyk\kolkoikrzyzyk.h" />
     <ClInclude Include="kolkoikrzyzyk\plansza\plansza.h" />
     <ClInclude Include="kolkoikrzyzyk\gracz\gracz.h" />
+    <ClInclude Include="kolkoikrzyzyk\MinMax\MinMax.h" />
   </ItemGroup>
 </Project>
