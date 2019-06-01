@@ -1,12 +1,14 @@
 #include<iostream>
 #include "plansza.h"
 
-
+/*Tworzy planszê wpisuj¹c do pól 0-GRACZ_NIEZNANY*/
 Plansza::Plansza(int rozmiar,int ile_w_rzedzie) :
 	rozmiar_(rozmiar),
-	liczba_ruchow_(0),
-	ile_w_rzedzie_(ile_w_rzedzie)
+	liczba_ruchow_(rozmiar*rozmiar),
+	ile_w_rzedzie_(ile_w_rzedzie),
+	ost_ruch_{rozmiar*rozmiar}
 {
+	
 	plansza_ = new char*[rozmiar_];
 	for (int i = 0; i < rozmiar_; i++)
 	{
@@ -31,10 +33,15 @@ Plansza::~Plansza()
 bool Plansza::dodaj_ruch(int x, int y, char gracz)
 {
 
-	if (plansza_[x][y] == GRACZ_NIEZNANY)
+	if (plansza_[x][y] == ' ')
 	{
 		plansza_[x][y] = gracz;
-		++liczba_ruchow_;
+
+		ost_ruch_[0] = x;
+		ost_ruch_[1] = y;
+
+		--liczba_ruchow_;
+
 		return true;
 	}
 	return false;
@@ -42,194 +49,128 @@ bool Plansza::dodaj_ruch(int x, int y, char gracz)
 
 bool Plansza::usun_ruch(int x, int y)
 {
-	if (plansza_[x][y] != GRACZ_NIEZNANY)
+	if (plansza_[x][y] != ' ')
 	{
-		plansza_[x][y] = GRACZ_NIEZNANY;
-		--liczba_ruchow_;
+		plansza_[x][y] = ' ';
+
+		++liczba_ruchow_;
+
+		ost_ruch_[0] = rozmiar_;
+		ost_ruch_[1] = rozmiar_;
+
 		return true;
 	}
 	return false;
 }
 
-void Plansza::wyswietl()
-{
-	system("cls");
-
-	for (int i = 0; i < rozmiar_; i++)
-	{
-		for (int j = 0; j < rozmiar_; j++)
-		{
-			std::cout<< plansza_[i][j];
-
-			if (j < rozmiar_ - 1)
-			{
-				std::cout << "|";
-			}
-		}
-		std::cout << "\n";
-		std::cout << "-------------" << std::endl;
-
-	}
-}
-
-bool Plansza::czy_wygrana(char gracz)
-{
-	int w_rzedzie=0;
-
-// Wiersze
-	for (int i = 0; i < rozmiar_; i++)
-	{
-		for (int j = 0; j < rozmiar_; j++)
-		{
-			if (plansza_[i][j] == gracz)
-			{
-				w_rzedzie++;
-				if (w_rzedzie == ile_w_rzedzie_)
-				{
-					return true;
-				}
-
-			}
-			else
-			{
-				w_rzedzie = 0;
-			}
-		}
-	}
-
-// Kolumny
-	w_rzedzie = 0;
-	for (int i = 0; i < rozmiar_; i++)
-	{
-		for (int j = 0; j< rozmiar_; j++)
-		{
-			if (plansza_[j][i] == gracz)
-			{
-				w_rzedzie++;
-				if (w_rzedzie == ile_w_rzedzie_)
-				{
-					return true;
-				}
-			}
-			else
-			{
-				w_rzedzie = 0;
-			}
-		}
-	}
-
-//Przekatna 1
-	unsigned x, y;
-	for (int i = 0; i < rozmiar_; i++)
-	{
-		w_rzedzie = 0;
-		x = i;
-		y = 0;
-		while (x < rozmiar_)
-		{
-			if (gracz == plansza_[x++][y++])
-			{
-				if (++w_rzedzie == ile_w_rzedzie_)
-				{
-					return true;
-				}
-			}
-			else
-			{
-				w_rzedzie = 0;
-			}
-		}
-	}
-	for (int i = 0; i < rozmiar_; i++)
-	{
-		w_rzedzie = 0;
-		x = 0;
-		y = i;
-		while (y < rozmiar_)
-		{
-			if (gracz == plansza_[x++][y++])
-			{
-				if (++w_rzedzie == ile_w_rzedzie_)
-				{
-					return true;
-				}
-			}
-			else
-			{
-				w_rzedzie = 0;
-			}
-		}
-	}
-
-// Przekatna 2
-	for (int i = 0; i < rozmiar_; i++)
-	{
-		w_rzedzie = 0;
-		x = 0;
-		y = rozmiar_ - i;
-		while (y < rozmiar_)
-		{
-			if (gracz == plansza_[x++][y--])
-			{
-				if (++w_rzedzie == ile_w_rzedzie_)
-				{
-					return true;
-				}
-			}
-			else
-			{
-				w_rzedzie = 0;
-			}
-		}
-	}
-	for (int i = 0; i < rozmiar_; i++)
-	{
-		w_rzedzie = 0;
-		x = rozmiar_ - 1;
-		y = i;
-		while (y < rozmiar_)
-		{
-			if (gracz == plansza_[x--][y++])
-			{
-				if (++w_rzedzie == ile_w_rzedzie_)
-				{
-					return true;
-				}
-			}
-			else
-			{
-				w_rzedzie = 0;
-			}
-		}
-	}
-	return false;
-}
-
-bool Plansza::czy_remis()
-{
-	return liczba_ruchow_ == rozmiar_ * rozmiar_;
-}
-
-char Plansza::zwroc_wygranego()
-{
-	if (czy_wygrana(GRACZ_AI))
-	{
-		return GRACZ_AI;
-	}
-	if (czy_wygrana(GRACZ_CZLOWIEK))
-	{
-		return GRACZ_CZLOWIEK;
-	}
-	if (czy_remis() == 0)
-	{
-		return GRACZ_NIEZNANY;
-	}
-	return 0;
-}
-
 char Plansza::zwroc_plansze(int x, int y)
 {
 	return plansza_[x][y];
+}
+
+void Plansza::wyswietl()
+{
+		system("cls");
+
+		int i, j, k;
+		std::cout << "\t\tGra Kolko i Krzyzyk! (" << rozmiar_ << "x" << rozmiar_ << ")\n";
+		std::cout << "\tTY - X\t|\tKOMPUTER - O" << "\n\n";
+
+		std::cout << "\t";
+		for (k = 0; k < rozmiar_; k++)
+		{
+			std::cout << ((k > 9) ? ("    ") : ("     ")) << k;
+		}
+
+		std::cout << "\n\t   ";
+		for (k = 0; k < rozmiar_; k++)
+		{
+			std::cout << "______";
+		}
+
+		std::cout << "\n";
+		for (i = 0; i < rozmiar_; i++)
+		{
+			std::cout << "\t  |";
+			for (k = 0; k < rozmiar_; k++)
+			{
+				std::cout << "     |";
+			}
+
+			std::cout << "\n\t" << i;
+			std::cout << ((i > 9) ? ("|") : (" |"));
+
+			for (j = 0; j < rozmiar_; j++)
+			{
+				std::cout << "  " << plansza_[i][j] << "  |";
+			}
+
+			std::cout << "\n\t  |";
+			for (k = 0; k < rozmiar_; k++)
+			{
+				std::cout << "_____|";
+			}
+
+			std::cout << "\n";
+		}
+}
+/*Funkcja sprawdzajaca wygranego:
+//Gdy ostatni ruch jest rowny rozmiarowi to zwraca 0
+//Gdy liczba ruchów jest mniejsza od 0 b¹dŸ równa 0 to zwraca 0, jeœli nie to zwraca N(gra trwa)*/
+char Plansza::sprawdzenie_wygranego()
+{
+	int tmp, a, b;
+
+	if (ost_ruch_[0] == rozmiar_)
+	{
+		return 0;
+	}
+
+	for (int i = -1; i < 1; ++i)
+	{
+		for (int j = -1; j <= 1; ++j)
+		{
+			if (i >= 0 && j >= 0)
+			{
+				return (liczba_ruchow_ <= 0) ? (GRA_TRWA) : (0);
+			}
+
+			tmp = 1;
+			a = i;
+			b = j;
+			while (ost_ruch_[0] + a >= 0 &&
+				ost_ruch_[0] + a < rozmiar_ &&
+				ost_ruch_[1] + b >= 0 &&
+				ost_ruch_[1] + b < rozmiar_ &&
+				plansza_[ost_ruch_[0] + a][ost_ruch_[1] + b] == plansza_[ost_ruch_[0]][ost_ruch_[1]])
+			{
+				++tmp;
+				a += i;
+				b += j;
+			}
+
+			a = i;
+			b = j;
+			while (ost_ruch_[0] - a >= 0 &&
+				ost_ruch_[0] - a < rozmiar_ &&
+				ost_ruch_[1] - b >= 0 &&
+				ost_ruch_[1] - b < rozmiar_ &&
+				plansza_[ost_ruch_[0] - a][ost_ruch_[1] - b] == plansza_[ost_ruch_[0]][ost_ruch_[1]])
+			{
+				++tmp;
+				a += i;
+				b += j;
+
+			}
+
+			if (tmp >= ile_w_rzedzie_)
+			{
+				return plansza_[ost_ruch_[0]][ost_ruch_[1]];
+			}
+		}
+	}
+
+	return 0;
 }
 
 int Plansza::zwroc_rozmiar()

@@ -9,19 +9,17 @@ class Kolkoikrzyzyk
 {
 public:
 	Kolkoikrzyzyk();
-	~Kolkoikrzyzyk();
-
-	void inicializacja();
+	
+	void start();
 
 private:
+
+	void inicializacja_();
+	void gra_();
+
 	Plansza* plansza_;
-	MinMax* minmax_;
-	int ile_w_rzedzie_;
-	char gracz_;
-
-	char start();
-	char wykonuj_ruch();
-
+	MinMax* MinMax_;
+	
 };
 
 #endif

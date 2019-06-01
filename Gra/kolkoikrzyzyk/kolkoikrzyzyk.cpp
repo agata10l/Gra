@@ -2,95 +2,77 @@
 #include<fstream>
 
 #include "kolkoikrzyzyk.h"
+#include "MinMax/MinMax.h"
+
+using namespace std;
 
 Kolkoikrzyzyk::Kolkoikrzyzyk() :
 	plansza_(nullptr),
-	minmax_(nullptr)
+	MinMax_(nullptr)
 {
 }
 
-Kolkoikrzyzyk::~Kolkoikrzyzyk()
+void Kolkoikrzyzyk::start()
 {
-	delete plansza_;
+	inicializacja_();
+	gra_();
 }
 
-void Kolkoikrzyzyk::inicializacja()
+void Kolkoikrzyzyk::inicializacja_()
 {
-	int rozmiar;
-	char wybor_gracza;
-	std::cout << "Witaj w grze Kolko i Krzyzyk !" << std::endl;
-	std::cout << "Podaj rozmiar planszy:" << "\t";
+	unsigned rozmiar;
+	unsigned ile_w_rzedzie;
+
+	std::cout << "\tKolko i krzyzyk!\n\n";
+	std::cout << "Podaj rozmiar tablicy: ";
 	std::cin >> rozmiar;
-
-	std::cout << "Podaj ilosc znakow w rzedzie:" << "\t";
-	std::cin >> ile_w_rzedzie_;
-
-	plansza_ = new Plansza(rozmiar,ile_w_rzedzie_);
-
-	std::cout << "Wybierz zaczynajacego:" << std::endl;
-	std::cout << "[X] -ty" << std::endl;
-	std::cout << "[Y] -gracz AI" << std::endl;
-	std::cin >> wybor_gracza;
-	if (wybor_gracza == 'x' || wybor_gracza == 'X')
+	if (rozmiar < 3 || rozmiar > 9)
 	{
-		gracz_ = GRACZ_CZLOWIEK;
-	}
-	else
-	{
-		gracz_ = GRACZ_AI;
+		std::cout << "Zly rozmiar, podaj nowy:";
+		std::cin >> rozmiar;
 	}
 
-	start();
+	std::cout << "Podaj rzad: ";
+	std::cin >> ile_w_rzedzie;
+	if (ile_w_rzedzie < 3 || ile_w_rzedzie > 9)
+	{
+		std::cout << "Zly rzad, podaj nowy:";
+		std::cin >> ile_w_rzedzie;
+	}
+
+	 plansza_ = new Plansza(rozmiar, ile_w_rzedzie);
+	 MinMax_= new MinMax();
 }
 
-char Kolkoikrzyzyk::start()
+void Kolkoikrzyzyk::gra_()
 {
-	while (wykonuj_ruch() == 0) plansza_->wyswietl();
+	char gracz = GRACZ_CZLOWIEK;
+	unsigned x, y;
 
-	return 0;
+	while (plansza_->sprawdzenie_wygranego() == 0)
+	{
+		plansza_->wyswietl();
+
+		if (gracz == GRACZ_CZLOWIEK)
+		{
+			std::cout << "Twoja kolej (rzad,kolumna): ";
+			do
+			{
+				std::cin >> x >> y;
+			} while (plansza_->dodaj_ruch(x, y, gracz) == false);
+
+			gracz = GRACZ_AI;
+		}
+		else if (gracz == GRACZ_AI)
+		{
+			MinMax_ruch_t ruch= MinMax_->najlepszy_ruch(plansza_);
+			plansza_->dodaj_ruch(ruch.x, ruch.y, GRACZ_AI);
+
+			gracz = GRACZ_CZLOWIEK;
+		}
+	}
+
+	plansza_->wyswietl();
+	std::cout << "Wygral: " << plansza_->sprawdzenie_wygranego();
 }
 
-char Kolkoikrzyzyk::wykonuj_ruch()
-{
-	int x, y;
-	bool czyWygral;
-
-	if (gracz_ == GRACZ_CZLOWIEK)
-	{
-		do
-		{
-			std::cout << "Podaj pozycjê:";
-			std::cin >> x >> y;
-			
-		} while (plansza_->dodaj_ruch(x, y, gracz_) == false);
-
-		if (plansza_->czy_wygrana(gracz_))
-		{
-			return gracz_;
-		}
-		gracz_ = GRACZ_AI;
-	}
-	else if (gracz_ == GRACZ_AI)
-	{
-		do
-		{
-			std::cout << "Podaj pozycjê:";
-			std::cin >> x >> y;
-
-		} while (plansza_->dodaj_ruch(x, y, gracz_) == false);
-		
-		if (plansza_->czy_wygrana(gracz_))
-		{
-			return gracz_;
-		}
-		gracz_ = GRACZ_CZLOWIEK;
-
-	}
-
-	if (plansza_->czy_remis())
-	{
-		return GRACZ_NIEZNANY;
-	}
-
-	return 0;
-}

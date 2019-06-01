@@ -20,10 +20,14 @@ struct MinMax_ruch_t
 class MinMax
 {
 public:
-	MinMax_ruch_t ruch_gracza_AI(Plansza* plansza);
+	MinMax();
+
+	MinMax_ruch_t najlepszy_ruch(Plansza* plansza);
 
 private:
-	MinMax_ruch_t znajdz_najlepszy_ruch(Plansza* plansza, char gracz);
+	MinMax_ruch_t znajdz_najlepszy_ruch(Plansza* plansza, char gracz, int alpha, int beta, int glebokosc, bool rec);
+
+	int maks_glebokosc_;
 };
 
 #endif

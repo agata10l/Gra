@@ -4,6 +4,6 @@
 #define GRACZ_CZLOWIEK	'X'
 #define GRACZ_AI		'O'
 #define GRACZ_NIEZNANY	' '
-#define REMIS           0XFF
+#define GRA_TRWA        'N'
 
 #endif

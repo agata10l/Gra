@@ -4,85 +4,119 @@
 #include <vector>
 #include <iostream>
 
-MinMax_ruch_t MinMax::ruch_gracza_AI(Plansza* plansza)
+
+MinMax::MinMax() :
+	maks_glebokosc_(0)
 {
-	return znajdz_najlepszy_ruch(plansza, GRACZ_AI);
 }
 
-MinMax_ruch_t MinMax::znajdz_najlepszy_ruch(Plansza* plansza, char gracz)
+MinMax_ruch_t MinMax::najlepszy_ruch(Plansza* plansza)
 {
-	char wygrany = plansza->zwroc_wygranego();
+	return znajdz_najlepszy_ruch(plansza, -10000, 10000, 0, 0, GRACZ_AI);
+}
+
+MinMax_ruch_t MinMax::znajdz_najlepszy_ruch(Plansza* plansza, char gracz, int alpha, int beta, int glebokosc, bool rec)
+{
+	char wygrany = plansza->sprawdzenie_wygranego();
 	std::vector<MinMax_ruch_t> ruchy;
-	int najlepszy_wynik;
-	int najlepszy_ruch;
+	int najlepszy_wynik=0;
+	unsigned najlepszy_ruch=0;
+	MinMax_ruch_t ruch;
 
-	if (wygrany == GRACZ_AI)
+	glebokosc += rec;
+
+	if (gracz != 0)
 	{
-		return MinMax_ruch_t(1);
-	}
-	else if (wygrany == GRACZ_CZLOWIEK)
-	{
-		return MinMax_ruch_t(-1);
-	}
-	else if (wygrany == REMIS)
-	{
-		return MinMax_ruch_t(0);
-	}
-
-	for (int y = 0; y < plansza->zwroc_rozmiar(); ++y)
-	{
-		for (int x = 0; x < plansza->zwroc_rozmiar(); ++x)
-		{
-			if (plansza->zwroc_plansze(x, y) == GRACZ_NIEZNANY)
-			{
-				MinMax_ruch_t ruch(0);
-
-				ruch.x = x;
-				ruch.y = y;
-
-				plansza->dodaj_ruch(x, y, gracz);
-
-				if (gracz == GRACZ_AI)
-				{
-					ruch.wynik = znajdz_najlepszy_ruch(plansza, GRACZ_CZLOWIEK).wynik;
-				}
-				else if (gracz == GRACZ_CZLOWIEK)
-				{
-					ruch.wynik = znajdz_najlepszy_ruch(plansza, GRACZ_AI).wynik;
-				}
-
-				ruchy.push_back(ruch);
-
-				plansza->usun_ruch(x, y);
-			}
-		}
+		return (najlepszy_wynik == -1) ? MinMax_ruch_t(-1000 * najlepszy_wynik - 20 * glebokosc) : MinMax_ruch_t(-1000 * najlepszy_wynik + 20 * glebokosc);
 	}
 
 	if (gracz == GRACZ_AI)
 	{
-		najlepszy_wynik = INT32_MIN;
+		najlepszy_wynik = alpha;
 
-		for (int i = 0; i < ruchy.size(); ++i)
+		for (int x = 0; x < plansza->zwroc_rozmiar(); ++x)
 		{
-			if (ruchy[i].wynik > najlepszy_wynik)
+			for (int y = 0; y < plansza->zwroc_rozmiar(); ++y)
 			{
-				najlepszy_ruch = i;
-				najlepszy_wynik = ruchy[i].wynik;
+				if (plansza->zwroc_plansze(x, y) == GRACZ_NIEZNANY)
+				{
+					plansza->dodaj_ruch(x, y, gracz);
+
+					ruch.x = x;
+					ruch.y = y;
+					ruch.wynik = znajdz_najlepszy_ruch(plansza, najlepszy_wynik, beta, glebokosc, true, GRACZ_CZLOWIEK).wynik;
+
+					plansza->usun_ruch(x, y);
+
+					ruchy.push_back(ruch);
+
+					if (ruch.wynik > najlepszy_wynik)
+					{
+						ruch.wynik = najlepszy_wynik;
+					}
+					if (beta <= najlepszy_wynik)
+					{
+						x = y = plansza->zwroc_rozmiar();
+					}
+				}
+			}
+		}
+
+		najlepszy_wynik = INT_MIN;
+		for (int q = 0; q < ruchy.size(); ++q)
+		{
+			if (ruchy[q].wynik > najlepszy_wynik)
+			{
+				najlepszy_ruch = q;
+				najlepszy_wynik = ruchy[q].wynik;
 			}
 		}
 	}
 	else
 	{
-		najlepszy_wynik = INT32_MAX;
+		najlepszy_wynik = beta;
 
-		for (int i = 0; i < ruchy.size(); ++i)
+		for (int x = 0; x < plansza->zwroc_rozmiar(); ++x)
 		{
-			if (ruchy[i].wynik < najlepszy_wynik)
+			for (int y = 0; y < plansza->zwroc_rozmiar(); ++y)
 			{
-				najlepszy_ruch = i;
-				najlepszy_wynik = ruchy[i].wynik;
+				if (plansza->zwroc_plansze(x, y) == GRACZ_NIEZNANY)
+				{
+					plansza->dodaj_ruch(x, y, gracz);
+
+					ruch.x = x;
+					ruch.y = y;
+					ruch.wynik = znajdz_najlepszy_ruch(plansza, najlepszy_wynik, beta, glebokosc, true, GRACZ_CZLOWIEK).wynik;
+
+					plansza->usun_ruch(x, y);
+
+					ruchy.push_back(ruch);
+
+					if (ruch.wynik < najlepszy_wynik)
+					{
+						ruch.wynik = najlepszy_wynik;
+					}
+					if (alpha >= najlepszy_wynik)
+					{
+						x = y = plansza->zwroc_rozmiar();
+					}
+				}
+			}
+		}
+
+		najlepszy_wynik = INT_MAX;
+		for (int q = 0; q < ruchy.size(); ++q)
+		{
+			if (ruchy[q].wynik < najlepszy_wynik)
+			{
+				najlepszy_ruch = q;
+				najlepszy_wynik = ruchy[q].wynik;
 			}
 		}
 	}
+
 	return ruchy[najlepszy_ruch];
 }
+	
+
+	
