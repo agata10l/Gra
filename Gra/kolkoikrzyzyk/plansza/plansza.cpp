@@ -3,10 +3,11 @@
 
 /*Tworzy planszê wpisuj¹c do pól 0-GRACZ_NIEZNANY*/
 Plansza::Plansza(int rozmiar,int ile_w_rzedzie) :
+	plansza_(nullptr),
 	rozmiar_(rozmiar),
 	liczba_ruchow_(rozmiar*rozmiar),
 	ile_w_rzedzie_(ile_w_rzedzie),
-	ost_ruch_{rozmiar*rozmiar}
+	ost_ruch_{rozmiar, rozmiar}
 {
 	
 	plansza_ = new char*[rozmiar_];

@@ -15,7 +15,7 @@ MinMax_ruch_t MinMax::najlepszy_ruch(Plansza* plansza)
 	return znajdz_najlepszy_ruch(plansza, -10000, 10000, 0, 0, GRACZ_AI);
 }
 
-MinMax_ruch_t MinMax::znajdz_najlepszy_ruch(Plansza* plansza, char gracz, int alpha, int beta, int glebokosc, bool rec)
+MinMax_ruch_t MinMax::znajdz_najlepszy_ruch(Plansza* plansza, int alpha, int beta, int glebokosc, bool rec, char gracz)
 {
 	char wygrany = plansza->sprawdzenie_wygranego();
 	std::vector<MinMax_ruch_t> ruchy;
@@ -34,9 +34,9 @@ MinMax_ruch_t MinMax::znajdz_najlepszy_ruch(Plansza* plansza, char gracz, int al
 	{
 		najlepszy_wynik = alpha;
 
-		for (int x = 0; x < plansza->zwroc_rozmiar(); ++x)
+		for (unsigned x = 0; x < plansza->zwroc_rozmiar(); ++x)
 		{
-			for (int y = 0; y < plansza->zwroc_rozmiar(); ++y)
+			for (unsigned y = 0; y < plansza->zwroc_rozmiar(); ++y)
 			{
 				if (plansza->zwroc_plansze(x, y) == GRACZ_NIEZNANY)
 				{

@@ -25,9 +25,9 @@ public:
 	MinMax_ruch_t najlepszy_ruch(Plansza* plansza);
 
 private:
-	MinMax_ruch_t znajdz_najlepszy_ruch(Plansza* plansza, char gracz, int alpha, int beta, int glebokosc, bool rec);
+	MinMax_ruch_t znajdz_najlepszy_ruch(Plansza* plansza, int alpha, int beta, int glebokosc, bool rec, char gracz);
 
-	int maks_glebokosc_;
+	unsigned maks_glebokosc_;
 };
 
 #endif
