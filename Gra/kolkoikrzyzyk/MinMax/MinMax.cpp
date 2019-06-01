@@ -15,6 +15,7 @@ MinMax_ruch_t MinMax::najlepszy_ruch(Plansza* plansza)
 	return znajdz_najlepszy_ruch(plansza, -10000, 10000, 0, 0, GRACZ_AI);
 }
 
+
 MinMax_ruch_t MinMax::znajdz_najlepszy_ruch(Plansza* plansza, int alpha, int beta, int glebokosc, bool rec, char gracz)
 {
 	char wygrany = plansza->sprawdzenie_wygranego();
