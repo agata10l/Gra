@@ -59,7 +59,7 @@ void Kolkoikrzyzyk::gra_()
 			do
 			{
 				std::cin >> x >> y;
-			} while (plansza_->dodaj_ruch(x, y, gracz) == false);
+			} while (plansza_->dodaj_ruch(x, y, GRACZ_CZLOWIEK) == false);
 
 			gracz = GRACZ_AI;
 		}

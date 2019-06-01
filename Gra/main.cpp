@@ -9,4 +9,6 @@ int main()
 	Kolkoikrzyzyk kolkoikrzyzyk;
 
 	kolkoikrzyzyk.start();
+
+	system("pause");
 }

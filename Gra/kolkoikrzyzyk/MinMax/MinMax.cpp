@@ -15,23 +15,22 @@ MinMax_ruch_t MinMax::najlepszy_ruch(Plansza* plansza)
 	return znajdz_najlepszy_ruch(plansza, -10000, 10000, 0, 0, GRACZ_AI);
 }
 
-
 MinMax_ruch_t MinMax::znajdz_najlepszy_ruch(Plansza* plansza, int alpha, int beta, int glebokosc, bool rec, char gracz)
 {
+	int najlepszy_wynik = 0;
+	unsigned najlepszy_ruch = 0;
 	char wygrany = plansza->sprawdzenie_wygranego();
 	std::vector<MinMax_ruch_t> ruchy;
-	int najlepszy_wynik=0;
-	unsigned najlepszy_ruch=0;
 	MinMax_ruch_t ruch;
 
 	glebokosc += rec;
 
-	if (gracz != 0)
+	if (wygrany != 0)
 	{
 		return (najlepszy_wynik == -1) ? MinMax_ruch_t(-1000 * najlepszy_wynik - 20 * glebokosc) : MinMax_ruch_t(-1000 * najlepszy_wynik + 20 * glebokosc);
 	}
 
-	if (gracz == GRACZ_AI)
+	if (wygrany == GRACZ_AI)
 	{
 		najlepszy_wynik = alpha;
 
@@ -64,7 +63,7 @@ MinMax_ruch_t MinMax::znajdz_najlepszy_ruch(Plansza* plansza, int alpha, int bet
 		}
 
 		najlepszy_wynik = INT_MIN;
-		for (int q = 0; q < ruchy.size(); ++q)
+		for (unsigned q = 0; q < ruchy.size(); ++q)
 		{
 			if (ruchy[q].wynik > najlepszy_wynik)
 			{
@@ -77,9 +76,9 @@ MinMax_ruch_t MinMax::znajdz_najlepszy_ruch(Plansza* plansza, int alpha, int bet
 	{
 		najlepszy_wynik = beta;
 
-		for (int x = 0; x < plansza->zwroc_rozmiar(); ++x)
+		for (unsigned x = 0; x < plansza->zwroc_rozmiar(); ++x)
 		{
-			for (int y = 0; y < plansza->zwroc_rozmiar(); ++y)
+			for (unsigned y = 0; y < plansza->zwroc_rozmiar(); ++y)
 			{
 				if (plansza->zwroc_plansze(x, y) == GRACZ_NIEZNANY)
 				{
@@ -106,7 +105,7 @@ MinMax_ruch_t MinMax::znajdz_najlepszy_ruch(Plansza* plansza, int alpha, int bet
 		}
 
 		najlepszy_wynik = INT_MAX;
-		for (int q = 0; q < ruchy.size(); ++q)
+		for (unsigned q = 0; q < ruchy.size(); ++q)
 		{
 			if (ruchy[q].wynik < najlepszy_wynik)
 			{
@@ -118,6 +117,7 @@ MinMax_ruch_t MinMax::znajdz_najlepszy_ruch(Plansza* plansza, int alpha, int bet
 
 	return ruchy[najlepszy_ruch];
 }
+
 	
 
 	
