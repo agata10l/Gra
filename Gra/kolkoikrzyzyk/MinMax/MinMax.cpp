@@ -15,6 +15,13 @@ MinMax_ruch_t MinMax::najlepszy_ruch(Plansza* plansza)
 	return znajdz_najlepszy_ruch(plansza, -10000, 10000, 0, 0, GRACZ_AI);
 }
 
+/* MinmMax + ciêcia alpha beta, zawiera ocenê iloœci ruchów do danego celu oraz ocenê konkretnego pola.
+Gdy kóryœ z graczy wygra b¹dŸ bêdzie remis to funkcja zwraca ruch oceniaj¹c odpowiednio:
+1000-punkty za glebokosc dla wygranej AI , -1000+punkty za glebokosc dla czlowieka.
+Gdy dany ruch nie zakañcza gry to rekurencyjnie wyo³ujemy funkcje dla ruchu drugiego gracza.
+Gdy zebrane zostan¹ ruchy + ich oceny wybrany zostaje ten najlepszy(minmalna ocena dla czlowieka,
+maxymalna dla koputera).Ciecia alpha beta zastosowane po to, aby omin¹æ niektóre poddrzewa (kiedy dla 
+czlowieka wartosci s¹ ni¿sze od bety, dla komputera wy¿sze ni¿ alpha.*/
 MinMax_ruch_t MinMax::znajdz_najlepszy_ruch(Plansza* plansza, int alpha, int beta, int glebokosc, bool rec, char gracz)
 {
 	int najlepszy_wynik = 0;
@@ -30,7 +37,7 @@ MinMax_ruch_t MinMax::znajdz_najlepszy_ruch(Plansza* plansza, int alpha, int bet
 		return (najlepszy_wynik == -1) ? MinMax_ruch_t(-1000 * najlepszy_wynik - 20 * glebokosc) : MinMax_ruch_t(-1000 * najlepszy_wynik + 20 * glebokosc);
 	}
 
-	if (wygrany == GRACZ_AI)
+	if (gracz == GRACZ_AI)
 	{
 		najlepszy_wynik = alpha;
 
@@ -46,13 +53,14 @@ MinMax_ruch_t MinMax::znajdz_najlepszy_ruch(Plansza* plansza, int alpha, int bet
 					ruch.y = y;
 					ruch.wynik = znajdz_najlepszy_ruch(plansza, najlepszy_wynik, beta, glebokosc, true, GRACZ_CZLOWIEK).wynik;
 
+					ruchy.push_back(ruch);
 					plansza->usun_ruch(x, y);
 
-					ruchy.push_back(ruch);
+					
 
 					if (ruch.wynik > najlepszy_wynik)
 					{
-						ruch.wynik = najlepszy_wynik;
+						  ruch.wynik = najlepszy_wynik;
 					}
 					if (beta <= najlepszy_wynik)
 					{
