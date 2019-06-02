@@ -116,8 +116,9 @@ void Plansza::wyswietl()
 		}
 }
 /*Funkcja sprawdzajaca wygranego:
-//Gdy ostatni ruch jest rowny rozmiarowi to zwraca 0
-//Gdy liczba ruchów jest mniejsza od zero b¹dŸ równa zero(brak ruchow) to zwraca 0, jeœli nie to zwraca N(gra trwa)*/
+//Gdy ostatni ruch jest rowny rozmiarowi to zwraca 0,
+//Gdy liczba ruchów jest mniejsza od zero b¹dŸ równa zero(brak ruchow) to zwraca N, jeœli nie to zwraca 0
+Gfy ¿aden warunek nie spe³niony to zwraca 0*/
 char Plansza::sprawdzenie_wygranego()
 {
 	int tmp, a, b;
@@ -133,7 +134,7 @@ char Plansza::sprawdzenie_wygranego()
 		{
 			if (i >= 0 && j >= 0)
 			{
-				return (liczba_ruchow_ <= 0) ? (GRA_TRWA) : (0);
+				return (liczba_ruchow_ <= 0) ? (GRA) : (0);
 			}
 
 			tmp = 1;
